@@ -32,10 +32,14 @@ Decrypt:
 """
 
 def get_derived_key(password, salt, count):
+    print(list(salt))
     key = bytes(password, encoding="UTF-8") + bytes(salt)
     for i in range(count):
         m = hashlib.md5(key)
         key = m.digest()
+
+
+    print(list(key))
     return (key[:8], key[8:])
 
 def decrypt(msg, password):
@@ -54,7 +58,10 @@ def encrypt(msg, password):
     pad_num = 8 - (len(msg) % 8)
     for i in range(pad_num):
         msg += chr(pad_num)
+
+
     (dk, iv) = get_derived_key(password, salt, 1000)
+
     crypter = DES.new(dk, DES.MODE_CBC, iv)
 
     enc_text = crypter.encrypt(msg.encode('UTF-8'))
@@ -74,7 +81,8 @@ def main():
         print(decrypt(msg, passwd))
 
     elif (par_type == "E"):
-        re.sub(r'[\x01-\x08]', '', encrypt(msg, passwd).decode("UTF-8"))
+        msg = input("请输入明文：")
+        print(re.sub(r'[\x01-\x08]', '', encrypt(msg, passwd).decode("UTF-8")))
 
 
 
